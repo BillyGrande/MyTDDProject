@@ -30,8 +30,8 @@ class NewVisitorTest(unittest.TestCase):
             'Enter a to-do item'
         )
 
-        # He types "Meet my friend Odysseas 8pm" (Don't forget Mexas is very social)
-        inputbox.send_keys('Meet my friend Odysseas 8pm')
+        # He types "Meet my friend Odysseas at 8pm" (Don't forget Mexas is very social)
+        inputbox.send_keys('Meet my friend Ody at 8pm')
 
         # He hits enter with his clumsy fingers, the page updates and now the page lists
         # "1: Meet my friend Ody at 8pm"
@@ -40,21 +40,29 @@ class NewVisitorTest(unittest.TestCase):
 
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Meet my friend Ody at 8pm' for row in rows),
-            "New to-do item did not appear in table"
-
-        )
+        self.assertIn('1: Meet my friend Ody at 8pm', [row.text for row in rows])
 
         # There is still a text box inviting him to add more items. He
         # enters "Cook lemonpie to bring Ody" (Nikos is a chef)
-        self.fail('Finish the test!')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Cook lemonpie to bring Ody')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates again, now both items are listed
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Meet my friend Ody at 8pm', [row.text for row in rows])
+        self.assertIn(
+            '2: Cook lemonpie to bring Ody',
+            [row.text for row in rows]
+        )
+
 
         # Nikos wonders why his lemonpies sucks and wether the site will remember his list. Then he sees
         # that the site has generated a uniqued URL for him -- there is some
         # explanatory text to that effect
+        self.fail('Finisth the test!')
 
         # He visits that URL (big brain moment for Nikos) -
         # his to-do list is still there (yay!)
