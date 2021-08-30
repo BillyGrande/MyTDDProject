@@ -11,6 +11,11 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
+    def check_for_row_in_list_table(self, row_text):
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn(row_text, [row.text for row in rows])
+
     def test_can_start_a_list_and_retrieve_it_late(self):
 
         # Nikos Mexas wants to to-do his new life
@@ -37,10 +42,7 @@ class NewVisitorTest(unittest.TestCase):
         # "1: Meet my friend Ody at 8pm"
         inputbox.send_keys(Keys.ENTER)
         time.sleep(1)
-
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Meet my friend Ody at 8pm', [row.text for row in rows])
+        self.check_for_row_in_list_table('1: Meet my friend Ody at 8pm')
 
         # There is still a text box inviting him to add more items. He
         # enters "Cook lemonpie to bring Ody" (Nikos is a chef)
@@ -50,13 +52,8 @@ class NewVisitorTest(unittest.TestCase):
         time.sleep(1)
 
         # The page updates again, now both items are listed
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
-        self.assertIn('1: Meet my friend Ody at 8pm', [row.text for row in rows])
-        self.assertIn(
-            '2: Cook lemonpie to bring Ody',
-            [row.text for row in rows]
-        )
+        self.check_for_row_in_list_table('1: Meet my friend Ody at 8pm')
+        self.check_for_row_in_list_table('2: Cook lemonpie to bring Ody')
 
 
         # Nikos wonders why his lemonpies sucks and wether the site will remember his list. Then he sees
