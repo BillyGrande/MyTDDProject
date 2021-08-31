@@ -1,9 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from django.test import LiveServerTestCase
 import time
-import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Firefox()
@@ -20,7 +20,7 @@ class NewVisitorTest(unittest.TestCase):
 
         # Nikos Mexas wants to to-do his new life
         # He visits the url Billy suggested him earlier this day
-        self.browser.get('http://localhost:8000')
+        self.browser.get(self.live_server_url)
 
         # He notices the page title and misses header bcs he stupid.
         # Both mention to-do lists
@@ -66,6 +66,3 @@ class NewVisitorTest(unittest.TestCase):
 
         # Satisfied, he cries himself to sleep
 
-
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
